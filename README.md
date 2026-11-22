@@ -31,7 +31,7 @@ Generate your own SMBIOS identity before booting. Follow the graphics installati
 | Camera | Working, owner confirmed |
 | Hardware cursor | Rendering corruption remains; separate software arrow used |
 | System sleep / lid resume | **Broken / unreliable** with this graphics stack |
-| Built-in HDMI | Working on ASUS VX228 at 1080p60, RGB 8-bit SDR |
+| **External display via built-in HDMI** | **✓ Confirmed working:** ASUS VX228, 1920 × 1080 at 60 Hz, RGB 8-bit SDR; internal panel remained usable |
 | USB-C display output, HDMI audio, other external modes, Bluetooth audio, long recording and mic sleep/wake | Not qualified |
 
 A separate local sleep workaround keeps the laptop running when closed. It is
@@ -88,8 +88,10 @@ This EFI uses **custom NootedGreen + WhateverGreen, not WhateverXe**. It require
 matching TGL graphics/framebuffer, HookCase, GPUBundles and shader compiler/LLVM
 bridge files inside macOS. Copying an EFI does not install them.
 
-See [graphics installation and recovery](installer/README.md) and
-[source lineage/build metadata](docs/nootedgreen-build.json). The public tools
+See [graphics installation and recovery](installer/README.md),
+[source lineage/build metadata](docs/nootedgreen-build.json), and the companion
+[HP 250 G10 NootedGreen fork for Iris Xe A7A1](https://github.com/tarekwasfy01/NootedGreen-for-Intel-Iris-Xe-on-Raptor-Lake-U-8086-A7A1-)
+([v32 tested release](https://github.com/tarekwasfy01/NootedGreen-for-Intel-Iris-Xe-on-Raptor-Lake-U-8086-A7A1-/releases/tag/hp-a7a1-v32)). The public tools
 package installs only the builder. On an installation already containing the
 exact verified graphics source files, create a private full package:
 
