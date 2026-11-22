@@ -1326,7 +1326,7 @@
 				Rg==
 				</data>
 				<key>boot-args</key>
-				<string>-ngreentglwithgfx -allow3d -disablegfxfirmware ngreen-dmc=adlp -ngreenv189 -ngreenkeepefi -ngreenxefix -ngreenfixbootmode ngreenSched=4 ngreenV142=3 amfi_get_out_of_my_way=1 -vi2c-force-polling keepsyms=1 debug=0x100 gfxrst=1</string>
+				<string>-ngreenhpindexedddc -ngreenhprgb8 -ngreenhptmdspll0 -ngreenhptmdstimings -ngreenhphdmisafe -ngreenhphdmiscope -ngreenhphdmifrac -ngreenhpnativeddc -ngreenhphdmi -ngreenhphdmiio -v -ngreentglwithgfx -allow3d -disablegfxfirmware ngreen-dmc=adlp -ngreenv189 -ngreenkeepefi -ngreenxefix -ngreenfixbootmode ngreenSched=4 ngreenV142=3 amfi_get_out_of_my_way=1 -vi2c-force-polling keepsyms=1 debug=0x100 gfxrst=1</string>
 				<key>csr-active-config</key>
 				<data>
 				EwoAAA==

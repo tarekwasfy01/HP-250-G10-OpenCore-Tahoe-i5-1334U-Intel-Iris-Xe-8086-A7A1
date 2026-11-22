@@ -9,8 +9,10 @@
   "l3_banks": 6,
   "gt_default_mhz": 1250,
   "dvmt_bytes": 62914560,
-  "uuid": "BD127477-12A3-3DD7-8A23-42F23ECBEFC7",
-  "sha256": "ef25b29ad971fdcc07f188895874ef092d5ec613cacb1bab12567da6871d1a00",
+  "uuid": "5032CA25-EB51-3BD0-BFAC-7E76A184E46D",
+  "sha256": "02b8678bcf05919e59b9e2a40805044157af9c7a8fc4e40fa59a6dcc9c129f93",
   "cursor_trial": true,
-  "cursor_trial_uuid": "BD127477-12A3-3DD7-8A23-42F23ECBEFC7"
+  "cursor_trial_uuid": "BD127477-12A3-3DD7-8A23-42F23ECBEFC7",
+  "hdmi_build": "hp-hdmi-v32-pipe-b-legacy-gamma",
+  "hdmi_patch": "docs/nootedgreen-hdmi-v32.patch"
 }

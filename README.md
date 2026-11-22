@@ -1,12 +1,8 @@
-# HP 250 G10 — macOS Tahoe, Iris Xe and internal microphone
+# HP 250 G10 — macOS Tahoe, accelerated Iris Xe, HDMI and internal microphone
 
-Working reference for an **HP 250 G10 / Core i5-1334U**, updated **15 November 2026**.
-The owner confirmed desktop startup and **audible capture from the built-in microphone**
-with the included HP250Dmic build. The working OCTEST EFI was copied to TAHOE-BOOT;
-95 source files were verified. A post-copy TAHOE-BOOT boot test remains separate.
+Updated **22 November 2026**. On this HP 250 G10 with a Core i5-1334U, the owner confirmed a correctly colored desktop on an ASUS VX228 connected to the built-in HDMI port at **1920 × 1080, 60 Hz**. The internal display stayed usable. The test used OCTEST, the custom NootedGreen v32 build and the matching Tahoe 25G332 graphics stack. The owner also confirmed audible capture from the built-in microphone on 15 November.
 
-**Generate your own SMBIOS identity before booting.** This is a hardware-specific
-reference. The EFI and microphone package do not install the graphics system stack.
+Generate your own SMBIOS identity before booting. Follow the graphics installation section for the macOS-side dependencies.
 
 ## Hardware and status
 
@@ -35,11 +31,24 @@ reference. The EFI and microphone package do not install the graphics system sta
 | Camera | Working, owner confirmed |
 | Hardware cursor | Rendering corruption remains; separate software arrow used |
 | System sleep / lid resume | **Broken / unreliable** with this graphics stack |
-| External displays, Bluetooth audio, long recording and mic sleep/wake | Not qualified |
+| Built-in HDMI | Working on ASUS VX228 at 1080p60, RGB 8-bit SDR |
+| USB-C display output, HDMI audio, other external modes, Bluetooth audio, long recording and mic sleep/wake | Not qualified |
 
 A separate local sleep workaround keeps the laptop running when closed. It is
 not installed by copying this EFI. Another panel, BIOS or macOS build needs its
 own validation; these results are not a guarantee for every HP 250 variant.
+
+### Using the built-in HDMI port
+
+Use the included `EFI/OC/Kexts/NootedGreen.kext` together with the HDMI boot arguments in the public `EFI/OC/config.plist`. Keep your own SMBIOS values when updating an existing installation. Boot with the HDMI cable disconnected, wait for the desktop, then plug the monitor directly into the laptop. This is the sequence tested on the reference machine.
+
+The HP build requests power for display pipe B and selects the legacy gamma mode for the external output. The preceding v31 build already produced a desktop, but gradients appeared as rainbow bands and a white window appeared black. To check the running build, run:
+
+```sh
+ioreg -lw0 | grep -E 'HPHDMITrialBuild|HPHDMIGammaB'
+```
+
+The tested build reports `hp-hdmi-v32-pipe-b-legacy-gamma`. The gamma property is published after the external modeset. Booting with HDMI attached and resuming an external display after sleep remain unverified.
 
 ## Included files
 
