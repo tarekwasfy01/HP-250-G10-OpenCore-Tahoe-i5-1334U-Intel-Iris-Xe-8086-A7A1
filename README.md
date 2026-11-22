@@ -25,7 +25,7 @@ Generate your own SMBIOS identity before booting. Follow the graphics installati
 | Wi-Fi | Working, owner confirmed |
 | Bluetooth | Discovery and Samsung Galaxy S21 pairing confirmed |
 | Battery percentage | Working, owner confirmed |
-| Brightness slider and F2/F3 | Working, owner confirmed |
+| Internal panel brightness and F2/F3 | Working. The owner confirmed a visibly brighter panel at maximum after PWM calibration. |
 | CPU Turbo Boost | 4600-MHz P-state previously observed |
 | Keyboard / touchpad | Included in working setup; not exhaustively qualified |
 | Camera | Working, owner confirmed |
@@ -218,7 +218,7 @@ option; it does not repair the microphone.
 - **Bluetooth:** RealtekBluetoothFirmware 1.0.2 with measured USB match;
   BlueToolFixup 2.7.2. Bluetooth audio/reconnection remain unqualified.
 - **Battery:** VirtualSMC/SMCBatteryManager 1.3.9 + ECEnabler 1.0.6.
-- **Brightness:** BrightnessKeys 1.0.3 with retained HP ACPI/XOSI configuration.
+- **Internal panel brightness:** F2/F3 use BrightnessKeys 1.0.3. The bundled NootedGreen v32-based PWM build uses `ngreenblmax=17741` to scale the brightness request to the firmware PWM period. Before calibration, maximum brightness on this HP measured 17,741 duty counts against a period of 96,000. The owner confirmed the improvement visually. This value is specific to the tested panel. If you already use the matching graphics stack, this change only requires the updated EFI.
 - **Cursor:** [optional NootedGreen trial](docs/nootedgreen-cursor-trial.patch)
   does not establish correct cursor rendering; a separate software arrow is used.
 - **Sleep:** lid resume remains unreliable. The local display-only workaround is
