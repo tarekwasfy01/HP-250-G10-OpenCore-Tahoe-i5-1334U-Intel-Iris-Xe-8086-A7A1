@@ -23,6 +23,7 @@ Generate your own SMBIOS identity before booting. Follow the graphics installati
 | Internal microphone | **Working, audible capture owner-confirmed on 15 November** |
 | Speakers / audio output | Working, owner confirmed |
 | Wi-Fi | Working, owner confirmed |
+| USB-C Ethernet (WCH `1a86:5394`) | Verified after unplugging and reconnecting the adapter after login. The Ethernet interface negotiated 100BASE-TX full duplex, received a DHCP lease and reached the router with Wi-Fi still active. |
 | Bluetooth | Discovery and Samsung Galaxy S21 pairing confirmed |
 | Battery percentage | Working, owner confirmed |
 | Internal panel brightness and F2/F3 | Working. The owner confirmed a visibly brighter panel at maximum after PWM calibration. |
@@ -215,6 +216,7 @@ option; it does not repair the microphone.
   six L3 banks, 1250-MHz parameter and fingerprint-checked **60-MiB DVMT**
   correction. [HP patch](docs/nootedgreen-hp.patch).
 - **Output:** AppleALC 1.9.8 + SimpleHDA 1.0.1, layout 55; no VoodooHDA.
+- **USB-C Ethernet:** The bundled codeless `HP250USBECM.kext` matches configuration 2, interface 1 to Apple’s `AppleUSBECMData`. If Ethernet is missing after booting with the hub connected, unplug and reconnect the USB-C hub after login.
 - **Bluetooth:** RealtekBluetoothFirmware 1.0.2 with measured USB match;
   BlueToolFixup 2.7.2. Bluetooth audio/reconnection remain unqualified.
 - **Battery:** VirtualSMC/SMCBatteryManager 1.3.9 + ECEnabler 1.0.6.
