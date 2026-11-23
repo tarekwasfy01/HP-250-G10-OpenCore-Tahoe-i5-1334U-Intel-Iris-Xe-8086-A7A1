@@ -63,3 +63,8 @@ The microphone .pkg distributes only this CoreAudio HAL plug-in and its notices.
 It contains no Apple-origin graphics drivers, kernel collections, private
 identities or audio recordings. Capture was owner-confirmed on the reference HP;
 other machines and long-term operation are not qualified.
+
+
+## ReYogaSMC HP fan telemetry (23 November 2026)
+
+The EFI includes ReYogaSMC, based on upstream commit `61ba0f8179c9aa6f8b0915d4af0ed81dbfa3797c`, with an HP WMI read-only fan RPM change. The reference laptop reported one fan at 3302 RPM. The corresponding source patch and full GPL-2.0 license are included in `docs/reyogasmc-hp-wmi.patch` and `licenses/ReYogaSMC-GPL-2.0.txt`. `SMCSuperIO.kext` is present but disabled in this EFI; `SMCProcessor.kext` remains enabled, while CPU temperature values are not yet confirmed.

@@ -1,0 +1,148 @@
+diff --git a/ReYogaSMC/Platform/DYVPC.cpp b/ReYogaSMC/Platform/DYVPC.cpp
+index 09e21b9..fd9abb8 100644
+--- a/ReYogaSMC/Platform/DYVPC.cpp
++++ b/ReYogaSMC/Platform/DYVPC.cpp
+@@ -133,3 +133,34 @@ void DYVPC::updateVPC(UInt32 event) {
+-    if (id == HPWMI_BEZEL_BUTTON)
+-        DebugLog("Bezel id: 0x%x - 0x%x", id, data);
+-    else
++    if (id == HPWMI_BEZEL_BUTTON) {
++        struct HotkeyContext {
++            UInt32 keyCode{0};
++        } context;
++
++        IOReturn status = kIOReturnNotReady;
++        if (commandGate) {
++            status = commandGate->runAction(
++                [](OSObject *owner, void *argument, void *, void *, void *) -> IOReturn {
++                    auto self = OSDynamicCast(DYVPC, owner);
++                    auto context = static_cast<HotkeyContext *>(argument);
++                    if (!self || !context || !self->BIOSCap || !self->YWMI)
++                        return kIOReturnNotReady;
++                    // Match hp-wmi: on a bezel notification, read query 0x0c.
++                    return self->WMIQuery(HPWMI_HOTKEY_QUERY, &context->keyCode,
++                                          HPWMI_READ, 0, sizeof(context->keyCode))
++                               ? kIOReturnSuccess
++                               : kIOReturnError;
++                },
++                &context);
++        }
++
++        ++hotkeyEventCount;
++        setProperty("HPWMIHotkeyEventCount", hotkeyEventCount, 32);
++        if (status == kIOReturnSuccess) {
++            setProperty("HPWMILastHotkeyCode", context.keyCode, 32);
++            setProperty("HPWMILastHotkeyName", context.keyCode == 0x270 ? "KEY_MICMUTE" : "other");
++            AlwaysLog("HP WMI hotkey code 0x%x%s", context.keyCode,
++                      context.keyCode == 0x270 ? " (KEY_MICMUTE)" : "");
++        } else {
++            setProperty("HPWMILastHotkeyRead", "failed");
++            AlwaysLog("HP WMI hotkey read failed (%x)", status);
++        }
++    } else
+@@ -239,0 +271,36 @@ bool DYVPC::WMIQuery(UInt32 query, void *buffer, enum hp_wmi_command command, UI
++// HP's hp-wmi interface exposes fan RPM through GM query 0x11. Do not call
++// query 0x10 here: Linux documents that it can switch the firmware thermal
++// policy into a user-defined state. This implementation only reads fan 0.
++IOReturn DYVPC::readPlatformFanRPM(UInt32 fan, UInt32 &rpm, UInt8 *control) {
++    if (control)
++        *control = 0xff;
++    if (fan != 0)
++        return kIOReturnUnsupported;
++    if (!commandGate)
++        return kIOReturnNotReady;
++
++    struct FanReadContext {
++        UInt32 rpm{0};
++    } context;
++
++    const IOReturn status = commandGate->runAction(
++        [](OSObject *owner, void *argument, void *, void *, void *) -> IOReturn {
++            auto self = OSDynamicCast(DYVPC, owner);
++            auto context = static_cast<FanReadContext *>(argument);
++            if (!self || !context || !self->BIOSCap || !self->YWMI)
++                return kIOReturnNotReady;
++
++            UInt8 data[4] = {0, 0, 0, 0};
++            if (!self->WMIQuery(0x11, data, HPWMI_GM, sizeof(data[0]), sizeof(data)))
++                return kIOReturnError;
++
++            context->rpm = (static_cast<UInt32>(data[2]) << 8) | data[3];
++            return context->rpm <= 20000 ? kIOReturnSuccess : kIOReturnError;
++        },
++        &context);
++
++    if (status == kIOReturnSuccess)
++        rpm = context.rpm;
++    return status;
++}
++
+diff --git a/ReYogaSMC/Platform/DYVPC.hpp b/ReYogaSMC/Platform/DYVPC.hpp
+index 50ff030..74a34e6 100644
+--- a/ReYogaSMC/Platform/DYVPC.hpp
++++ b/ReYogaSMC/Platform/DYVPC.hpp
+@@ -97,0 +98 @@ enum hp_wmi_command {
++    HPWMI_GM = 0x20008, // HP General Management WMI query family
+@@ -193,0 +195 @@ OSDeclareDefaultStructors(DYVPC)
++    UInt32 hotkeyEventCount{0};
+@@ -206,0 +209 @@ OSDeclareDefaultStructors(DYVPC)
++    IOReturn readPlatformFanRPM(UInt32 fan, UInt32 &rpm, UInt8 *control) APPLE_KEXT_OVERRIDE;
+diff --git a/ReYogaSMC/SMC/DYSMC.cpp b/ReYogaSMC/SMC/DYSMC.cpp
+index 4afdb83..f60606b 100644
+--- a/ReYogaSMC/SMC/DYSMC.cpp
++++ b/ReYogaSMC/SMC/DYSMC.cpp
+@@ -10,0 +11 @@
++#include "../ReYogaVPC.hpp"
+@@ -124,0 +126,18 @@ bool DYSMC::addTachometerKey(OSString *name, UInt8 fan) {
++bool DYSMC::addHPWmiFanKey(UInt8 fan) {
++    UInt32 rpm = 0;
++    if (!fanProvider || sensorCount >= MAX_SENSOR ||
++        fanProvider->readThinkFanRPM(0, rpm) != kIOReturnSuccess || rpm > 20000)
++        return false;
++
++    if (!VirtualSMCAPI::addKey(KeyF0Ac(fan), vsmcPlugin.data,
++                               VirtualSMCAPI::valueWithFp(0, SmcKeyTypeFpe2,
++                                                          new atomicFpKey(&currentSensor[sensorCount]))))
++        return false;
++
++    sensorType[sensorCount] = SENSOR_TYPE_HP_WMI_FAN;
++    sensorIndex[sensorCount] = 0;
++    atomic_store_explicit(&currentSensor[sensorCount], rpm, memory_order_release);
++    ++sensorCount;
++    return true;
++}
++
+@@ -139,0 +159,4 @@ void DYSMC::addVSMCKey() {
++        if (addHPWmiFanKey(0))
++            VirtualSMCAPI::addKey(KeyFNum, vsmcPlugin.data,
++                                  VirtualSMCAPI::valueWithUint8(1, nullptr,
++                                                               SMC_KEY_ATTRIBUTE_CONST | SMC_KEY_ATTRIBUTE_READ));
+@@ -225,0 +249,5 @@ void DYSMC::addVSMCKey() {
++    // Use the HP-specific RPM query only when the generic Numeric Sensor
++    // interface did not already provide a fan, avoiding duplicate keys.
++    if (fanCount == 0 && addHPWmiFanKey(0))
++        ++fanCount;
++
+@@ -241,0 +270,8 @@ void DYSMC::updateECVendor() {
++        if (sensorType[index] == SENSOR_TYPE_HP_WMI_FAN) {
++            UInt32 rpm = 0;
++            if (fanProvider && fanProvider->readThinkFanRPM(0, rpm) == kIOReturnSuccess && rpm <= 20000)
++                atomic_store_explicit(&currentSensor[index], rpm, memory_order_release);
++            continue;
++        }
++        if (!wmis)
++            continue;
+@@ -262,0 +299 @@ void DYSMC::getWMISensor(IOService *provider) {
++    fanProvider = OSDynamicCast(ReYogaVPC, provider);
+diff --git a/ReYogaSMC/SMC/DYSMC.hpp b/ReYogaSMC/SMC/DYSMC.hpp
+index 64412a7..9967d3a 100644
+--- a/ReYogaSMC/SMC/DYSMC.hpp
++++ b/ReYogaSMC/SMC/DYSMC.hpp
+@@ -16,0 +17,3 @@
++#define SENSOR_TYPE_HP_WMI_FAN 0x100
++
++class ReYogaVPC;
+@@ -71,0 +75 @@ OSDeclareDefaultStructors(DYSMC)
++    ReYogaVPC *fanProvider { nullptr };
+@@ -80,0 +85 @@ OSDeclareDefaultStructors(DYSMC)
++    bool addHPWmiFanKey(UInt8 fan);

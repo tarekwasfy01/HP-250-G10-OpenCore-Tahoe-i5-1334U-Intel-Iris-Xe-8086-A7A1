@@ -610,6 +610,60 @@
 				<key>Arch</key>
 				<string>x86_64</string>
 				<key>BundlePath</key>
+				<string>ReYogaSMC.kext</string>
+				<key>Comment</key>
+				<string>HP 250 G10 read-only fan RPM via HP WMI</string>
+				<key>Enabled</key>
+				<true/>
+				<key>ExecutablePath</key>
+				<string>Contents/MacOS/ReYogaSMC</string>
+				<key>MaxKernel</key>
+				<string></string>
+				<key>MinKernel</key>
+				<string></string>
+				<key>PlistPath</key>
+				<string>Contents/Info.plist</string>
+			</dict>
+			<dict>
+				<key>Arch</key>
+				<string>x86_64</string>
+				<key>BundlePath</key>
+				<string>SMCSuperIO.kext</string>
+				<key>Comment</key>
+				<string>Disabled on OCTEST fan test; ReYogaSMC supplies HP WMI RPM</string>
+				<key>Enabled</key>
+				<false/>
+				<key>ExecutablePath</key>
+				<string>Contents/MacOS/SMCSuperIO</string>
+				<key>MinKernel</key>
+				<string></string>
+				<key>MaxKernel</key>
+				<string></string>
+				<key>PlistPath</key>
+				<string>Contents/Info.plist</string>
+			</dict>
+			<dict>
+				<key>Arch</key>
+				<string>x86_64</string>
+				<key>BundlePath</key>
+				<string>SMCProcessor.kext</string>
+				<key>Comment</key>
+				<string>VirtualSMC Intel CPU temperature sensors</string>
+				<key>Enabled</key>
+				<true/>
+				<key>ExecutablePath</key>
+				<string>Contents/MacOS/SMCProcessor</string>
+				<key>MinKernel</key>
+				<string></string>
+				<key>MaxKernel</key>
+				<string></string>
+				<key>PlistPath</key>
+				<string>Contents/Info.plist</string>
+			</dict>
+			<dict>
+				<key>Arch</key>
+				<string>x86_64</string>
+				<key>BundlePath</key>
 				<string>ECEnabler.kext</string>
 				<key>Comment</key>
 				<string>HP battery/audio: 1.0.6</string>
@@ -1344,7 +1398,7 @@
 				Rg==
 				</data>
 				<key>boot-args</key>
-				<string>ngreenblmax=17741 -ngreenhpindexedddc -ngreenhprgb8 -ngreenhptmdspll0 -ngreenhptmdstimings -ngreenhphdmisafe -ngreenhphdmiscope -ngreenhphdmifrac -ngreenhpnativeddc -ngreenhphdmi -ngreenhphdmiio -v -ngreentglwithgfx -allow3d -disablegfxfirmware ngreen-dmc=adlp -ngreenv189 -ngreenkeepefi -ngreenxefix -ngreenfixbootmode ngreenSched=4 ngreenV142=3 amfi_get_out_of_my_way=1 -vi2c-force-polling keepsyms=1 debug=0x100 gfxrst=1</string>
+				<string>lilucpu=17 ngreenblmax=17741 -ngreenhpindexedddc -ngreenhprgb8 -ngreenhptmdspll0 -ngreenhptmdstimings -ngreenhphdmisafe -ngreenhphdmiscope -ngreenhphdmifrac -ngreenhpnativeddc -ngreenhphdmi -ngreenhphdmiio -v -ngreentglwithgfx -allow3d -disablegfxfirmware ngreen-dmc=adlp -ngreenv189 -ngreenkeepefi -ngreenxefix -ngreenfixbootmode ngreenSched=4 ngreenV142=3 amfi_get_out_of_my_way=1 -vi2c-force-polling keepsyms=1 debug=0x100 gfxrst=1</string>
 				<key>csr-active-config</key>
 				<data>
 				EwoAAA==

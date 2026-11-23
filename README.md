@@ -1,6 +1,6 @@
 # HP 250 G10 — macOS Tahoe, accelerated Iris Xe, HDMI and internal microphone
 
-Updated **22 November 2026**. On this HP 250 G10 with a Core i5-1334U, the owner confirmed a correctly colored desktop on an ASUS VX228 connected to the built-in HDMI port at **1920 × 1080, 60 Hz**. The internal display stayed usable. The test used OCTEST, the custom NootedGreen v32 build and the matching Tahoe 25G332 graphics stack. The owner also confirmed audible capture from the built-in microphone on 15 November.
+Updated **23 November 2026**. On this HP 250 G10 with a Core i5-1334U, the owner confirmed a correctly colored desktop on an ASUS VX228 connected to the built-in HDMI port at **1920 × 1080, 60 Hz**. The internal display stayed usable. The test used OCTEST, the custom NootedGreen v32 build and the matching Tahoe 25G332 graphics stack. The owner also confirmed audible capture from the built-in microphone on 15 November.
 
 Generate your own SMBIOS identity before booting. Follow the graphics installation section for the macOS-side dependencies.
 
@@ -30,7 +30,9 @@ Generate your own SMBIOS identity before booting. Follow the graphics installati
 | CPU Turbo Boost | 4600-MHz P-state previously observed |
 | Keyboard / touchpad | Included in working setup; not exhaustively qualified |
 | Camera | Working, owner confirmed |
-| Hardware cursor | Rendering corruption remains; separate software arrow used |
+| Fan RPM telemetry | **Confirmed:** one fan, `F0Ac` = 3302 RPM through HP WMI / ReYogaSMC; read-only, no fan curve/control |
+| CPU temperature sensors | SMCProcessor enabled; actual CPU temperature keys not confirmed yet |
+| Hardware cursor | Working, owner confirmed |
 | System sleep / lid resume | **Broken / unreliable** with this graphics stack |
 | **External display via built-in HDMI** | **✓ Confirmed working:** ASUS VX228, 1920 × 1080 at 60 Hz, RGB 8-bit SDR; internal panel remained usable |
 | USB-C display output, HDMI audio, other external modes, Bluetooth audio, long recording and mic sleep/wake | Not qualified |
@@ -67,7 +69,9 @@ The tested build reports `hp-hdmi-v32-pipe-b-legacy-gamma`. The gamma property i
 - [`SHA256SUMS`](SHA256SUMS): public release file hashes.
 
 No private serials, pairing state, raw hardware dumps, audio recordings, kernel
-collections or Apple-origin system graphics packages are published.
+collections or Apple-origin system graphics packages are published. The fan
+RPM result and ReYogaSMC HP WMI source patch are documented in
+[docs/reyogasmc-hp-wmi.md](docs/reyogasmc-hp-wmi.md).
 
 ## Installation
 

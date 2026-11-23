@@ -64,5 +64,12 @@
     "source": "https://github.com/b00t0x/WhateverXe-Graphics/blob/main/LICENSE.txt",
     "license": "NOASSERTION",
     "saved": true
+  },
+  "ReYogaSMC": {
+    "repository": "hoaug-tran/ReYogaSMC",
+    "source": "https://github.com/hoaug-tran/ReYogaSMC/tree/61ba0f8179c9aa6f8b0915d4af0ed81dbfa3797c",
+    "license": "GPL-2.0",
+    "saved": true,
+    "local_patch": "../docs/reyogasmc-hp-wmi.patch"
   }
 }
